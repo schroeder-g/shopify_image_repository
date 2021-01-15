@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "users")
 public class User {
 
-
+    //region fields / constructors
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userid;
@@ -52,6 +52,8 @@ public class User {
         this.email = email;
     }
 
+    //#endregion
+    //#region getters / setters
     public long getUserid() {
         return userid;
     }
@@ -83,4 +85,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+    //#endregion
 }
