@@ -11,7 +11,7 @@ import java.util.List;
 @Table(name = "users")
 public class User {
 
-
+    //region fields / constructors
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long userid;
@@ -21,7 +21,7 @@ public class User {
      * uses jpa to form a One-To-Many relationship to images.
      */
     @OneToMany(
-            mappedBy = "user",
+            mappedBy = "owner",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
@@ -52,6 +52,8 @@ public class User {
         this.email = email;
     }
 
+    //#endregion
+    //#region getters / setters
     public long getUserid() {
         return userid;
     }
@@ -83,4 +85,5 @@ public class User {
     public void setEmail(String email) {
         this.email = email;
     }
+    //#endregion
 }
