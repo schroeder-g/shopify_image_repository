@@ -21,7 +21,7 @@ public class User {
      * uses jpa to form a One-To-Many relationship to images.
      */
     @OneToMany(
-            mappedBy = "user",
+            mappedBy = "owner",
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
