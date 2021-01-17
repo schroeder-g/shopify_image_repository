@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 @Transactional
@@ -64,14 +65,12 @@ public class ImageServicesImpl implements ImageServices
     {
        List<Image> publicImages = new ArrayList<>();
        
-       imgRepos.findAll().iterator().forEachRemaining(publicImages :: add);
-        for (Image image : publicImages)
-        {
-            if (image.getIsPrivate())
-            {
-                publicImages.remove(image);
-            }
-        }
+       userRepos.findByUsername(username)
+               .getImages().iterator()
+               .forEachRemaining(publicImages :: add);
+
+       publicImages.removeIf(i -> (i.getIsPrivate()));
+
        return publicImages;
     }
 

@@ -78,7 +78,7 @@ public class UserServicesImpl
             newUser.setUserid(user.getUserid());
         }
 
-        newUser.setUsername(user.getUsername().toLowerCase());
+        newUser.setUsername(user.getUsername().toLowerCase().replaceAll(" ",  ""));
         newUser.setPasswordNoEncrypt(user.getPassword());
         newUser.setImages(user.getImages());
         newUser.setEmail(user.getEmail());

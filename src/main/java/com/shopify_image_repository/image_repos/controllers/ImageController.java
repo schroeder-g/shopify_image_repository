@@ -23,30 +23,42 @@ public class ImageController
     @Autowired
     HelperFunctions helpFuncs;
 
-    //#region GET All Listings
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @GetMapping(value = "/images/all_pics", produces = "application/json")
+    @GetMapping(value = "/all_pics", produces = "application/json")
     public ResponseEntity<?> getAllListings()
     {
         List<Image> allImages = imgServ.findAll();
         return new ResponseEntity<>(allImages, HttpStatus.OK);
     }
-    //#endregion
 
-    //#region GET Listing by ID
    @GetMapping(value = "/find/{imageid}", produces = "application/json")
    public ResponseEntity<?> getImageById(@PathVariable long imageid)
    {
        Image image = imgServ.findById(imageid);
        long currentUserID = helpFuncs.getCurrentUser().getUserid();
-       if ( currentUserID != image.getOwner().getUserid()){
+       if ( currentUserID != image.getOwner().getUserid() && image.getIsPrivate()){
            return new ResponseEntity<>(new ResourceNotFoundException("You don't have permission to view this image."), HttpStatus.FORBIDDEN);
        }
        return  new ResponseEntity<>(image, HttpStatus.OK);
    }
-    //#endregion
 
-   //#region PATCH Toggle Private
+    /**
+     * Returns a list of all of a users images that are public
+     * <br>Example: <a href="http://localhost:2019/users/users">http://localhost:2019/users/users</a>
+     *
+     * @return JSON list of all public imags a user owns with a status of OK
+     * @see ImageServices#findPublicImagesByUserName(String) () UserService.findAll()
+     */
+    @GetMapping(value = "/{username}/get-public-pics", produces = "application/json")
+    public ResponseEntity<?> getPublicImagesByUserName(@PathVariable String username)
+    {
+        List<Image> publicImgs = imgServ.findPublicImagesByUserName(username);
+        if ( publicImgs.size() < 1){
+            return new ResponseEntity<>(new ResourceNotFoundException("Sorry, " + username + " doesn't have any pictures you can see right now"), HttpStatus.NO_CONTENT);
+        }
+        return  new ResponseEntity<>(publicImgs, HttpStatus.OK);
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN')")
     @PatchMapping(value = "/images/{imageid}/updateprivacy", consumes = "application/json")
     public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image image)
@@ -61,7 +73,6 @@ public class ImageController
 
          return  new ResponseEntity<>(update_hidden, HttpStatus.OK);
      }
-    //#endregion
 
 
 

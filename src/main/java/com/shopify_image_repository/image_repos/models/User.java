@@ -25,6 +25,26 @@ public class User
     private long userid;
 
     /**
+     * The Username is a unique, necessary String field for all users. Employed for user lookups and looking up images by
+     */
+    @Column(nullable = false, unique = true)
+    private  String username;
+
+    /**
+     * The User's Password. Its value cannot be null and cannot be read by any users.
+     */
+    @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
+    /**
+     * The email address associated with this user. Its value cannot be null and must be unique.
+     */
+    @Column(nullable = false, unique = true)
+    @Email
+    private String email;
+
+    /**
      * List of images associated with this user. Does not get saved in the database directly.
      * uses jpa to form a One-To-Many relationship to images.
      */
@@ -34,23 +54,16 @@ public class User
     @JsonIgnoreProperties(value = "owner", allowSetters = true)
     private List<Image> images = new ArrayList<>();
 
+    /**
+     * List of roles associated with this user. Does not get saved in the database directly.
+     * uses jpa to form a One-To-Many relationship to Roles with UserRoles Pivot Table.
+     */
     @OneToMany(mappedBy = "user",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
     @JsonIgnoreProperties(value = "user", allowSetters = true)
     private Set<UserRoles> roles = new HashSet<>();
 
-
-    @Column(nullable = false, unique = true)
-    private  String username;
-
-    @Column(nullable = false)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String password;
-
-    @Column(nullable = false, unique = true)
-    @Email
-    private String email;
 
     public User() {
     }

@@ -1,20 +1,20 @@
 package com.shopify_image_repository.image_repos.controllers;
 
+import com.shopify_image_repository.image_repos.exceptions.ResourceNotFoundException;
+import com.shopify_image_repository.image_repos.models.Image;
 import com.shopify_image_repository.image_repos.models.User;
 import com.shopify_image_repository.image_repos.repositories.UserRepository;
 import com.shopify_image_repository.image_repos.services.HelperFunctions;
+import com.shopify_image_repository.image_repos.services.ImageServices;
 import com.shopify_image_repository.image_repos.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -28,7 +28,12 @@ public class UserController
     @Autowired
     private UserRepository useRepo;
 
-    //#region GET ALl Current User info
+    @Autowired
+    private ImageServices imgServ;
+
+    @Autowired
+    private HelperFunctions helpFuncs;
+
     /**
      * Returns the User record for the currently authenticated user based off of the supplied access token
      * <br>Example: <a href="http://localhost:2019/users/getuserinfo">http://localhost:2019/users/getuserinfo</a>
@@ -47,9 +52,7 @@ public class UserController
         return new ResponseEntity<>(u,
                 HttpStatus.OK);
     }
-    //#endregion
 
-    //#region GET All Users
     /**
      * Returns a list of all users
      * <br>Example: <a href="http://localhost:2019/users/users">http://localhost:2019/users/users</a>
@@ -66,9 +69,9 @@ public class UserController
         return new ResponseEntity<>(myUsers,
                 HttpStatus.OK);
     }
-    //#endregion
 
-    //#region GET User by ID
+
+
     /**
      * Returns a single user based off a user id number
      * <br>Example: http://localhost:2019/users/user/7
@@ -87,6 +90,5 @@ public class UserController
         return new ResponseEntity<>(u,
                 HttpStatus.OK);
     }
-    //#endregion
 
 }
