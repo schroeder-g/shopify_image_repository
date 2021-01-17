@@ -36,6 +36,12 @@ public class ImageServicesImpl implements ImageServices
     }
 
     @Override
+    public List<Image> findAllPublic() {
+
+        return null;
+    }
+
+    @Override
     public Image findById(long imageid) throws ResourceNotFoundException
     {
         Image img = imgRepos.findById(imageid)
@@ -93,6 +99,8 @@ public class ImageServicesImpl implements ImageServices
             throw new ResourceNotFoundException("You don't have permission to edit this image");
         }
     }
+
+
 
     @Override
     public void deleteAllImages() { imgRepos.deleteAll(); }

@@ -18,7 +18,8 @@ public class HelperFunctionsImpl implements HelperFunctions
     @Override
     public boolean isAuthorizedToMakeChange(String username) {
         Authentication authentication = SecurityContextHolder
-                                            .getContext().getAuthentication();
+                                        .getContext().getAuthentication();
+
         if (username.equalsIgnoreCase(authentication.getName()
                                         .toLowerCase()) || authentication.getAuthorities()
                                         .contains(new SimpleGrantedAuthority("ADMIN")))
@@ -34,7 +35,7 @@ public class HelperFunctionsImpl implements HelperFunctions
     @Override
     public User getCurrentUser() {
         Authentication authentication = SecurityContextHolder
-                                            .getContext().getAuthentication();
+                                        .getContext().getAuthentication();
 
         return userRepos.findByUsername(authentication.getName());
     }
