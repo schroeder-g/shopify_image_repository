@@ -8,11 +8,11 @@ public interface ImageServices
 {
     List<Image> findAll();
 
-    Image findById();
+    Image findById(long imageid);
 
-    Image save(long imageid);
+    Image save(Image image);
 
-    Image update(long imageid, Image updateImage);
+    Image update(long imageid, Image image);
 
     void deleteAllImages();
 }

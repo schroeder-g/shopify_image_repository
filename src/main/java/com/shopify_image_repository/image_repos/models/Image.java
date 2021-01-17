@@ -3,7 +3,6 @@ package com.shopify_image_repository.image_repos.models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(name="images")
@@ -13,7 +12,7 @@ public class Image
     //#region fields / constructors
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long imgid;
+    private long imageid;
 
     @ManyToOne
     @JoinColumn(name="userid",
@@ -44,12 +43,12 @@ public class Image
     }
     //#endregion
     //#region getters / setters
-    public long getImgid() {
-        return imgid;
+    public long getImageId() {
+        return imageid;
     }
 
-    public void setImgid(long imgid) {
-        this.imgid = imgid;
+    public void setImageId(long imgId) {
+        this.imageid = imgId;
     }
 
     public User getOwner() {
@@ -76,11 +75,11 @@ public class Image
         this.url = url;
     }
 
-    public Boolean getIsprivate() {
+    public Boolean getIsPrivate() {
         return isprivate;
     }
 
-    public void setIsprivate(Boolean isprivate) {
+    public void setIsPrivate(Boolean isprivate) {
         this.isprivate = isprivate;
     }
 
