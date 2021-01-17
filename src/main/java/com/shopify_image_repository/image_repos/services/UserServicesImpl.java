@@ -51,6 +51,7 @@ public class UserServicesImpl
         return userRepos.findByUsername(username);
     }
 
+    @Transactional
     @Override
     public void delete(long id) {
         userRepos.findById(id)
@@ -58,10 +59,12 @@ public class UserServicesImpl
         userRepos.deleteById(id);
     }
 
+    @Transactional
     @Override
     public void deleteAll() {
         userRepos.deleteAll();
     }
+
     @Transactional
     @Override
     public User save(User user)

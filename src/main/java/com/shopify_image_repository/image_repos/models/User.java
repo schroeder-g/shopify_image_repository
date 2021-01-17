@@ -7,6 +7,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import javax.persistence.*;
+import javax.validation.constraints.Email;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -14,7 +15,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-public class User {
+public class User
+    extends Auditable
+{
 
     //region fields / constructors
     @Id
@@ -25,12 +28,10 @@ public class User {
      * List of images associated with this user. Does not get saved in the database directly.
      * uses jpa to form a One-To-Many relationship to images.
      */
-    @OneToMany(
-            mappedBy = "owner",
+    @OneToMany(mappedBy = "owner",
             cascade = CascadeType.ALL,
-            orphanRemoval = true
-    )
-//    @JsonIgnoreProperties(value = "user", allowSetters = true)
+            orphanRemoval = true)
+    @JsonIgnoreProperties(value = "owner", allowSetters = true)
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",
@@ -48,21 +49,22 @@ public class User {
     private String password;
 
     @Column(nullable = false, unique = true)
+    @Email
     private String email;
 
     public User() {
     }
 
-    public User(String username, String password, String email) {
+    public User(String username, String email, String password) {
+        this.username = username;
+        this.email = email;
         setPassword(password);
+    }
+
+    public User(String username, String email) {
         this.username = username;
         this.email = email;
     }
-
-//    public User(String username, String email) {
-//        this.username = username;
-//        this.email = email;
-//    }
 
     //#endregion
     //#region getters / setters
@@ -103,7 +105,8 @@ public class User {
         this.password = passwordEncoder.encode(password);
     }
 
-    public void setPasswordNoEncrypt(String password) {
+    public void setPasswordNoEncrypt(String password)
+    {
         this.password = password;
     }
 
@@ -128,6 +131,8 @@ public class User {
 
         return rtnList;
     }
+
+
 
     public Set<UserRoles> getRoles() {
         return roles;

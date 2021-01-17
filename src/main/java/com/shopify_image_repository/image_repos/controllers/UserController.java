@@ -1,6 +1,7 @@
 package com.shopify_image_repository.image_repos.controllers;
 
 import com.shopify_image_repository.image_repos.models.User;
+import com.shopify_image_repository.image_repos.repositories.UserRepository;
 import com.shopify_image_repository.image_repos.services.HelperFunctions;
 import com.shopify_image_repository.image_repos.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ public class UserController
     private UserServices useServ;
 
     @Autowired
-    private HelperFunctions helpFuncs;
+    private UserRepository useRepo;
 
     //#region GET ALl Current User info
     /**
@@ -42,7 +43,7 @@ public class UserController
             produces = {"application/json"})
     public ResponseEntity<?> getCurrentUserInfo(Authentication authentication)
     {
-        User u = useServ.findUserByName(authentication.getName());
+        User u = useRepo.findByUsername(authentication.getName());
         return new ResponseEntity<>(u,
                 HttpStatus.OK);
     }

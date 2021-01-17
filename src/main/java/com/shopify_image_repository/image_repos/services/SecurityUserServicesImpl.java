@@ -24,7 +24,7 @@ public class SecurityUserServicesImpl
         User user = userRepos.findByUsername(s.toLowerCase());
         if (user == null)
         {
-            throw new ResourceNotFoundException("Invalid username: " + s.toLowerCase() + " | Lists Users: " + userRepos.findAll());
+            throw new ResourceNotFoundException("Invalid username or password: " + s.toLowerCase() + " | " + "Lists Users: " + userRepos.findAll());
 
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(),

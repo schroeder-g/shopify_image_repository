@@ -10,7 +10,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service(value = "helperFunctions")
-public class HelperFunctionsImpl implements HelperFunctions
+public class HelperFunctionsImpl
+        implements HelperFunctions
 {
     @Autowired
     UserRepository userRepos;
@@ -21,8 +22,8 @@ public class HelperFunctionsImpl implements HelperFunctions
                                         .getContext().getAuthentication();
 
         if (username.equalsIgnoreCase(authentication.getName()
-                                        .toLowerCase()) || authentication.getAuthorities()
-                                        .contains(new SimpleGrantedAuthority("ADMIN")))
+            .toLowerCase()) || authentication.getAuthorities()
+            .contains(new SimpleGrantedAuthority("ROLE_ADMIN")))
         {
             return true;
         } else

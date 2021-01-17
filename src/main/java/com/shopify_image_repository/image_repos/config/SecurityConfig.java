@@ -20,7 +20,8 @@ import javax.annotation.Resource;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
-public class SecurityConfig extends WebSecurityConfigurerAdapter
+public class SecurityConfig
+        extends WebSecurityConfigurerAdapter
 {
     @Override
     @Bean //allows you to modify default configurations for Spring beans
@@ -37,19 +38,20 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     public void globalUserDetails(AuthenticationManagerBuilder auth)
             throws Exception
     {
-        auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
-    }
-
-    @Bean
-    public PasswordEncoder encoder()
-    {
-        return new BCryptPasswordEncoder();
+        auth.userDetailsService(userDetailsService)
+                .passwordEncoder(encoder());
     }
 
     @Bean
     public TokenStore tokenStore()
     {
         return new InMemoryTokenStore();
+    }
+
+    @Bean
+    public PasswordEncoder encoder()
+    {
+        return new BCryptPasswordEncoder();
     }
 
 }

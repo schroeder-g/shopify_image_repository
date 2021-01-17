@@ -1,7 +1,9 @@
 package com.shopify_image_repository.image_repos.controllers;
 
 import com.shopify_image_repository.image_repos.models.User;
+import com.shopify_image_repository.image_repos.models.UserMinimum;
 import com.shopify_image_repository.image_repos.models.UserRoles;
+import com.shopify_image_repository.image_repos.repositories.UserRepository;
 import com.shopify_image_repository.image_repos.services.RoleServices;
 import com.shopify_image_repository.image_repos.services.UserServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +12,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,6 +23,8 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import springfox.documentation.annotations.ApiIgnore;
 
+import javax.persistence.EntityExistsException;
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.net.URI;
@@ -42,6 +47,9 @@ public class OpenController
     @Autowired
     private UserServices useServ;
 
+    @Autowired
+    private UserRepository useRepo;
+
     /**
      * A method in this controller adds a new user to the application with the role User so needs access to Role Services to do this.
      */
@@ -52,26 +60,27 @@ public class OpenController
      * This endpoint always anyone to create an account with the default role of USER. That role is hardcoded in this method.
      *
      * @param httpServletRequest the request that comes in for creating the new user
-     * @param newminuser         A special minimum set of data that is needed to create a new user
+     * @param minUser         A special minimum set of data that is needed to create a new user
      * @return The token access and other relevent data to token access. Status of CREATED. The location header to look up the new user.
      * @throws URISyntaxException we create some URIs during this method. If anything goes wrong with that creation, an exception is thrown.
      */
-    @PostMapping(value = "/createnewuser",
+    @PostMapping(
+            value = "/createnewuser",
             consumes = {"application/json"},
-            produces = {"application/json"})
+            produces = {"application/json"}
+            )
     public ResponseEntity<?> addSelf(
-            HttpServletRequest httpServletRequest,
-            @Valid
-            @RequestBody
-                    User newminuser)
-            throws
-            URISyntaxException
+        HttpServletRequest httpServletRequest,
+            @Valid @RequestBody
+                UserMinimum minUser)
     {
+        System.out.println(minUser);
+        System.out.println(minUser.getUsername());
         // Create the user
         User newuser = new User();
 
-        newuser.setUsername(newminuser.getUsername());
-        newuser.setPassword(newminuser.getPassword());
+        newuser.setUsername(minUser.getUsername());
+        newuser.setPassword(minUser.getPassword());
 
         // add the default role of user
         Set<UserRoles> newRoles = new HashSet<>();
@@ -104,7 +113,8 @@ public class OpenController
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
         headers.setAccept(acceptableMediaTypes);
-        headers.setBasicAuth(System.getenv("OAUTHCLIENTID"),
+        headers.setBasicAuth(
+                System.getenv("OAUTHCLIENTID"),
                 System.getenv("OAUTHCLIENTSECRET"));
 
         MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
@@ -113,9 +123,9 @@ public class OpenController
         map.add("scope",
                 "read write trust");
         map.add("username",
-                newminuser.getUsername());
+                minUser.getUsername());
         map.add("password",
-                newminuser.getPassword());
+                minUser.getPassword());
 
         HttpEntity<MultiValueMap<String, String>> request = new HttpEntity<>(map,
                 headers);

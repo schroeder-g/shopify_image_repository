@@ -49,11 +49,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
          // permitAll = everyone and their brother
          // authenticated = any authenticated, signed in, user */
         http.authorizeRequests()
-                .antMatchers("/roles/**")
-                .hasAnyRole("ADMIN")
                 .antMatchers("/",
                         "/h2-console/**",
-                        "/h2",
+                        "/h2/**",
                         "/login",
                         "/swagger-resources/**",
                         "/swagger-resource/**",
@@ -67,6 +65,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/images/**"
                 )
                 .authenticated()
+                .antMatchers("/roles/**")
+                .hasAnyRole("ADMIN")
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(new OAuth2AccessDeniedHandler());

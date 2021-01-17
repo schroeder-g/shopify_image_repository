@@ -35,11 +35,11 @@ public class Image
     public Image() {
     }
 
-    public Image( User user, String title, String url, Boolean isprivate) {
+    public Image( User user, String title, String url, Boolean isPrivate) {
         this.owner = user;
         this.title = title;
         this.url =  url;
-        this.isprivate = isprivate;
+        this.isprivate = isPrivate;
     }
     //#endregion
     //#region getters / setters
