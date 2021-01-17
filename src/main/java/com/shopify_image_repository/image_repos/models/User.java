@@ -30,7 +30,7 @@ public class User {
             cascade = CascadeType.ALL,
             orphanRemoval = true
     )
-    @JsonIgnoreProperties("user")
+//    @JsonIgnoreProperties(value = "user", allowSetters = true)
     private List<Image> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "user",
@@ -39,29 +39,30 @@ public class User {
     @JsonIgnoreProperties(value = "user", allowSetters = true)
     private Set<UserRoles> roles = new HashSet<>();
 
-    @Column(nullable = false)
+
+    @Column(nullable = false, unique = true)
     private  String username;
 
     @Column(nullable = false)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true)
     private String email;
 
     public User() {
     }
 
     public User(String username, String password, String email) {
+        setPassword(password);
         this.username = username;
-        this.password = password;
         this.email = email;
     }
 
-    public User(String username, String email) {
-        this.username = username;
-        this.email = email;
-    }
+//    public User(String username, String email) {
+//        this.username = username;
+//        this.email = email;
+//    }
 
     //#endregion
     //#region getters / setters

@@ -10,11 +10,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class ImageReposApplication
 {
-    /**
-     * Connect to the system environment where environment variables live.
-     */
-    @Autowired
-    private static Environment env;
+//    /**
+//     * Connect to the system environment where environment variables live.
+//     */
+//    @Autowired
+//    private static Environment env;
     /**
      * If an environment variable is not found, set this to true
      */
@@ -25,13 +25,13 @@ public class ImageReposApplication
      *
      * @param envvar The system environment where environment variable live
      */
-//    private static void checkEnvironmentVariable(String envvar)
-//    {
-//        if (System.getenv(envvar) == null)
-//        {
-//            stop = true;
-//        }
-//    }
+    private static void checkEnvironmentVariable(String envvar)
+    {
+        if (System.getenv(envvar) == null)
+        {
+            stop = true;
+        }
+    }
     /**
      * Main method to start the application.
      *
@@ -40,8 +40,8 @@ public class ImageReposApplication
     public static void main(String[] args)
     {
         // Check to see if the environment variables exists. If they do not, stop execution of application.
-//        checkEnvironmentVariable("OAUTHCLIENTID");
-//        checkEnvironmentVariable("OAUTHCLIENTSECRET");
+        checkEnvironmentVariable("OAUTHCLIENTID");
+        checkEnvironmentVariable("OAUTHCLIENTSECRET");
 
         if (!stop)
         {

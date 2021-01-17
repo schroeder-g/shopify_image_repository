@@ -24,7 +24,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
 {
     @Override
     @Bean //allows you to modify default configurations for Spring beans
-    public AuthenticationManager authenticationManagerBean() throws Exception
+    public AuthenticationManager authenticationManagerBean()
+            throws Exception
     {
         return super.authenticationManagerBean();
     }
@@ -33,7 +34,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter
     private UserDetailsService userDetailsService;
 
     @Autowired
-    public void globalUserDetails(AuthenticationManagerBuilder auth) throws Exception
+    public void globalUserDetails(AuthenticationManagerBuilder auth)
+            throws Exception
     {
         auth.userDetailsService(userDetailsService).passwordEncoder(encoder());
     }

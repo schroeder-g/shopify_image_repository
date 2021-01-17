@@ -48,7 +48,7 @@ public class ImageController
 
    //#region PATCH Toggle Private
     @PreAuthorize("hasAnyRole('ADMIN')")
-    @PatchMapping(value = "/images/{imageid}/updateprivacy", consumes = {"application/json"})
+    @PatchMapping(value = "/images/{imageid}/updateprivacy", consumes = "application/json")
     public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image image)
      {
          Image update_hidden = imgServ.findById(imageid);

@@ -17,7 +17,7 @@ public class Image
     @ManyToOne
     @JoinColumn(name="userid",
             nullable = false)
-    @JsonIgnoreProperties("images")
+    @JsonIgnoreProperties(value = "images", allowSetters = true)
     private User owner;
 
     @Column(nullable = false)
@@ -35,7 +35,8 @@ public class Image
     public Image() {
     }
 
-    public Image( String title, String url, Boolean isprivate) {
+    public Image( User user, String title, String url, Boolean isprivate) {
+        this.owner = user;
         this.title = title;
         this.url =  url;
         this.isprivate = isprivate;

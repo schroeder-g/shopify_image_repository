@@ -42,7 +42,7 @@ public class UserController
             produces = {"application/json"})
     public ResponseEntity<?> getCurrentUserInfo(Authentication authentication)
     {
-        User u = helpFuncs.getCurrentUser();
+        User u = useServ.findUserByName(authentication.getName());
         return new ResponseEntity<>(u,
                 HttpStatus.OK);
     }
@@ -59,7 +59,7 @@ public class UserController
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping(value = "/users",
             produces = "application/json")
-    public ResponseEntity<?> listAllUsers()
+    public ResponseEntity<?> listAllUsers(Authentication authentication)
     {
         List<User> myUsers = useServ.findAll();
         return new ResponseEntity<>(myUsers,

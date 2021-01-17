@@ -47,6 +47,11 @@ public class UserServicesImpl
     }
 
     @Override
+    public User findUserByName(String username) {
+        return userRepos.findByUsername(username);
+    }
+
+    @Override
     public void delete(long id) {
         userRepos.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("User id " + id + " not found"));
@@ -71,19 +76,20 @@ public class UserServicesImpl
         }
 
         newUser.setUsername(user.getUsername().toLowerCase());
-        newUser.setImages(user.getImages());
         newUser.setPasswordNoEncrypt(user.getPassword());
+        newUser.setImages(user.getImages());
         newUser.setEmail(user.getEmail());
 
         newUser.setRoles(new HashSet<>());
         for (UserRoles ur : user.getRoles())
         {
-            Role addRole = roleServices.findRoleById(ur.getRole()
+            Role addRole = roleServices
+                    .findRoleById(ur.getRole()
                     .getRoleid());
             newUser.getRoles()
                     .add(new UserRoles(newUser, addRole));
         }
-
+        System.out.println("saving user " + newUser.getRoles());
         return userRepos.save(newUser);
     }
 

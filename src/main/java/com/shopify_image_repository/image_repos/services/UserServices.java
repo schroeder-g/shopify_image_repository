@@ -20,6 +20,8 @@ public interface UserServices {
      */
     User findUserById(long id);
 
+    User findUserByName(String username);
+
     void delete(long id);
 
     /**
