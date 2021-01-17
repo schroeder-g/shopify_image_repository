@@ -35,10 +35,9 @@ public class Image
     public Image() {
     }
 
-    public Image(User owner, String title, String url, Boolean isprivate) {
-        this.owner = owner;
+    public Image( String title, String url, Boolean isprivate) {
         this.title = title;
-        this.url = url;
+        this.url =  url;
         this.isprivate = isprivate;
     }
     //#endregion

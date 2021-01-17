@@ -67,7 +67,7 @@ public class ImageServicesImpl implements ImageServices
     @Override
     public Image update(long imageid, Image image)
     {
-        User currentUser = helperFunctions.getCurrentUser();
+        User currentUser = image.getOwner();
 
         if (helperFunctions.isAuthorizedToMakeChange(currentUser.getUsername()))
         {
