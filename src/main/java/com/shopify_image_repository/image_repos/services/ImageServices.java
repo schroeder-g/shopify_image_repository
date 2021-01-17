@@ -14,7 +14,9 @@ public interface ImageServices
 
     List<Image> findAll();
 
-    List<Image> findAllPublic();
+    List<Image> findAllUserImagesById(long imageid);
+
+    List<Image> findPublicImagesByUserName(String userName);
 
     void deleteAllImages();
 

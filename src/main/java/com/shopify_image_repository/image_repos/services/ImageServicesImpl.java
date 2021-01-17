@@ -1,5 +1,6 @@
 package com.shopify_image_repository.image_repos.services;
 
+import com.shopify_image_repository.image_repos.exceptions.ResourceFoundException;
 import com.shopify_image_repository.image_repos.exceptions.ResourceNotFoundException;
 import com.shopify_image_repository.image_repos.models.Image;
 import com.shopify_image_repository.image_repos.models.User;
@@ -36,16 +37,54 @@ public class ImageServicesImpl implements ImageServices
     }
 
     @Override
-    public List<Image> findAllPublic() {
+    public List<Image> findAllUserImagesById(long imageid)
+            throws ResourceFoundException
+    {
 
-        return null;
+        User currUser = helperFunctions.getCurrentUser();
+        User imageOwner = findById(imageid).getOwner();
+
+        if ( currUser.getUserid() != imageOwner.getUserid() && !currUser.getRoles().contains("admin"))
+        {
+            throw new ResourceFoundException("You do not have permissions to view all of " + imageOwner.getUsername() + "'s images.");
+        }
+
+        List<Image> allImages = new ArrayList<>();
+
+        for (Image i : imageOwner.getImages())
+        {
+            allImages.add(i);
+        }
+
+        return allImages;
     }
 
     @Override
-    public Image findById(long imageid) throws ResourceNotFoundException
+    public List<Image> findPublicImagesByUserName(String username) 
     {
+       List<Image> publicImages = new ArrayList<>();
+       
+       imgRepos.findAll().iterator().forEachRemaining(publicImages :: add);
+        for (Image image : publicImages)
+        {
+            if (image.getIsPrivate())
+            {
+                publicImages.remove(image);
+            }
+        }
+       return publicImages;
+    }
+
+    @Override
+    public Image findById(long imageid) throws ResourceNotFoundException {
+        User currUser = helperFunctions.getCurrentUser();
         Image img = imgRepos.findById(imageid)
                 .orElseThrow(() -> new ResourceNotFoundException("Picture " + imageid + " is unavailable."));
+        // if the image queried is private, and the current user is neither the image owner nor an administrator, return null
+        if (img.getIsPrivate() && currUser.getUserid() != img.getOwner().getUserid() && !currUser.getRoles().contains("admin"))
+        {
+            throw new ResourceFoundException("You do not have permission to view this image.");
+        }
         return img;
     }
 

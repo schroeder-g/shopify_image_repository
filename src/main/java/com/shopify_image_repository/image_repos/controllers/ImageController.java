@@ -34,8 +34,8 @@ public class ImageController
     //#endregion
 
     //#region GET Listing by ID
-   @GetMapping(value = "/images/{imageid}", produces = "application/json")
-   public ResponseEntity<?> getListingById(@PathVariable long imageid)
+   @GetMapping(value = "/find/{imageid}", produces = "application/json")
+   public ResponseEntity<?> getImageById(@PathVariable long imageid)
    {
        Image image = imgServ.findById(imageid);
        long currentUserID = helpFuncs.getCurrentUser().getUserid();
@@ -47,7 +47,8 @@ public class ImageController
     //#endregion
 
    //#region PATCH Toggle Private
-     @PatchMapping(value = "/images/{imageid}/updateprivacy", consumes = {"application/json"})
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PatchMapping(value = "/images/{imageid}/updateprivacy", consumes = {"application/json"})
     public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image image)
      {
          Image update_hidden = imgServ.findById(imageid);

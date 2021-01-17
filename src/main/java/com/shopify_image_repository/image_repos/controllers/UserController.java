@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -26,7 +27,7 @@ public class UserController
     @Autowired
     private HelperFunctions helpFuncs;
 
-
+    //#region GET ALl Current User info
     /**
      * Returns the User record for the currently authenticated user based off of the supplied access token
      * <br>Example: <a href="http://localhost:2019/users/getuserinfo">http://localhost:2019/users/getuserinfo</a>
@@ -55,6 +56,7 @@ public class UserController
      * @return JSON list of all users with a status of OK
      * @see UserServices#findAll() UserService.findAll()
      */
+    @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping(value = "/users",
             produces = "application/json")
     public ResponseEntity<?> listAllUsers()
@@ -83,43 +85,6 @@ public class UserController
         User u = useServ.findUserById(userId);
         return new ResponseEntity<>(u,
                 HttpStatus.OK);
-    }
-    //#endregion
-
-    //#region POST New User
-    /**
-     * Given a complete User Object, create a new User record and accompanying useremail records
-     * and user role records.
-     * <br> Example: <a href="http://localhost:2019/users/user">http://localhost:2019/users/user</a>
-     *
-     * @param newuser A complete new user to add including emails and roles.
-     *                roles must already exist.
-     * @return A location header with the URI to the newly created user and a status of CREATED
-     * @throws URISyntaxException Exception if something does not work in creating the location header
-     * @see UserServices#save(User) UserService.save(User)
-     */
-    @PostMapping(value = "/register",
-            consumes = "application/json")
-    public ResponseEntity<?> addNewUser(
-            @Valid
-            @RequestBody
-                    User newuser) throws
-            URISyntaxException
-    {
-        newuser.setUserid(0);
-        newuser = useServ.save(newuser);
-
-        // set the location header for the newly created resource
-        HttpHeaders responseHeaders = new HttpHeaders();
-        URI newUserURI = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{userid}")
-                .buildAndExpand(newuser.getUserid())
-                .toUri();
-        responseHeaders.setLocation(newUserURI);
-
-        return new ResponseEntity<>(null,
-                responseHeaders,
-                HttpStatus.CREATED);
     }
     //#endregion
 
