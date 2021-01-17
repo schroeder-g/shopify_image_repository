@@ -23,18 +23,9 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
             throws Exception {
 
         // disable the creation and use of Cross Site Request Forgery Tokens.
-        // These tokens require coordination with the front end client that is beyond the scope of this class.
-        // See https://www.yawintutor.com/how-to-enable-and-disable-csrf/ for more information
         http.csrf().disable();
 
         // this disables all of the security response headers. This is necessary for access to the H2 Console.
-        // Normally, Spring Security would include headers such as
-        //     Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-        //     Pragma: no-cache
-        //     Expires: 0
-        //     X-Content-Type-Options: nosniff
-        //     X-Frame-Options: DENY
-        //     X-XSS-Protection: 1; mode=block
         http.headers()
                 .frameOptions()
                 .disable();
@@ -42,12 +33,11 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         // This application implements its own logout procedure so disable the one built into Spring Security
         http.logout().disable();
 
-        /** The fun part: who can make what requests
-         // our antMatchers control which user roles have access to which endpoints.
-         // we must order our antmatchers from most restrictive to least restrictive.
-         // So restrict at method level before restricting at endpoint level.
-         // permitAll = everyone and their brother
-         // authenticated = any authenticated, signed in, user */
+        // http.requiresChannel().anyRequest().requiresSecure(); required for https
+
+        // Controls Application Permissions.
+        // permitAll = everyone and their brother
+        // authenticated = any authenticated, signed in, user
         http.authorizeRequests()
                 .antMatchers("/",
                         "/h2-console/**",
@@ -65,34 +55,14 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                         "/images/**"
                 )
                 .authenticated()
+                .antMatchers(HttpMethod.PATCH,
+                        "/images**")
+                .authenticated()
                 .antMatchers("/roles/**")
                 .hasAnyRole("ADMIN")
                 .and()
                 .exceptionHandling()
                 .accessDeniedHandler(new OAuth2AccessDeniedHandler());
 
-        // http.requiresChannel().anyRequest().requiresSecure(); required for https
-
-        // disable the creation and use of Cross Site Request Forgery Tokens.
-        // These tokens require coordination with the front end client that is beyond the scope of this class.
-        // See https://www.yawintutor.com/how-to-enable-and-disable-csrf/ for more information
-        http.csrf()
-                .disable();
-
-        // this disables all of the security response headers. This is necessary for access to the H2 Console.
-        // Normally, Spring Security would include headers such as
-        //     Cache-Control: no-cache, no-store, max-age=0, must-revalidate
-        //     Pragma: no-cache
-        //     Expires: 0
-        //     X-Content-Type-Options: nosniff
-        //     X-Frame-Options: DENY
-        //     X-XSS-Protection: 1; mode=block
-        http.headers()
-                .frameOptions()
-                .disable();
-
-        // This application implements its own logout procedure so disable the one built into Spring Security
-        http.logout()
-                .disable();
     }
 }

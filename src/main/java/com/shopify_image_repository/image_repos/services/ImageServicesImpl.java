@@ -111,7 +111,7 @@ public class ImageServicesImpl implements ImageServices
     @Override
     public Image update(long imageid, Image image)
     {
-        User currentUser = image.getOwner();
+        User currentUser = helperFunctions.getCurrentUser();
 
         if (helperFunctions.isAuthorizedToMakeChange(currentUser.getUsername()))
         {
@@ -129,7 +129,7 @@ public class ImageServicesImpl implements ImageServices
 
             if (image.getIsPrivate() != null)
             {
-                updatingimage.setUrl(image.getUrl());
+                updatingimage.setIsPrivate(image.getIsPrivate());
             }
 
             return imgRepos.save(updatingimage);

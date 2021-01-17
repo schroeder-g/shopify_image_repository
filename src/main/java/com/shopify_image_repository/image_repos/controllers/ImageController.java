@@ -2,7 +2,6 @@ package com.shopify_image_repository.image_repos.controllers;
 
 import com.shopify_image_repository.image_repos.exceptions.ResourceNotFoundException;
 import com.shopify_image_repository.image_repos.models.Image;
-import com.shopify_image_repository.image_repos.models.User;
 import com.shopify_image_repository.image_repos.services.HelperFunctions;
 import com.shopify_image_repository.image_repos.services.ImageServices;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +42,7 @@ public class ImageController
    }
 
     /**
-     * Returns a list of all of a users images that are public
+     * Returns a list of all of a user's public images.
      * <br>Example: <a href="http://localhost:2019/users/users">http://localhost:2019/users/users</a>
      *
      * @return JSON list of all public imags a user owns with a status of OK
@@ -59,19 +58,19 @@ public class ImageController
         return  new ResponseEntity<>(publicImgs, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PatchMapping(value = "/images/{imageid}/updateprivacy", consumes = "application/json")
-    public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image image)
+    /**
+     * Edits Image Objects to
+     * <br>Example: <a href="http://localhost:2019/users/users">http://localhost:2019/users/users</a>
+     *
+     * @return JSON list of all public imags a user owns with a status of OK
+     * @see ImageServices#findPublicImagesByUserName(String) () UserService.findAll()
+     */
+    @PatchMapping(value = "/{imageid}/updateprivacy", consumes = {"application/json"})
+    public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image updateBody)
      {
-         Image update_hidden = imgServ.findById(imageid);
-         long currentUserID = helpFuncs.getCurrentUser().getUserid();
-         if ( currentUserID != image.getOwner().getUserid()){
-             return new ResponseEntity<>("You don't have permission to update this image.", HttpStatus.FORBIDDEN);
-         }
+         imgServ.update(imageid, updateBody);
 
-         update_hidden.setIsPrivate(!image.getIsPrivate());
-
-         return  new ResponseEntity<>(update_hidden, HttpStatus.OK);
+         return new ResponseEntity<>(HttpStatus.OK);
      }
 
 
