@@ -13,6 +13,7 @@ import java.util.Set;
 @Table(name = "roles")
 public class Role
         extends Auditable
+
 {
     /**
      * The primary key (long) of the roles table.

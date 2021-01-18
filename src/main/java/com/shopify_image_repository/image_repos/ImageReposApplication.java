@@ -10,11 +10,11 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @SpringBootApplication
 public class ImageReposApplication
 {
-    /**
-     * Connect to the system environment where environment variables live.
-     */
-    @Autowired
-    private static Environment env;
+//    /**
+//     * Connect to the system environment where environment variables live.
+//     */
+//    @Autowired
+//    private static Environment env;
     /**
      * If an environment variable is not found, set this to true
      */

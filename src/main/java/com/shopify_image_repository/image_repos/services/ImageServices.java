@@ -6,13 +6,18 @@ import java.util.List;
 
 public interface ImageServices
 {
+    Image findById(long imageid);
+
+    Image save(Image image);
+
+    Image update(long imageid, Image image);
+
     List<Image> findAll();
 
-    Image findById();
+    List<Image> findAllUserImagesById(long imageid);
 
-    Image save(long imageid);
-
-    Image update(long imageid, Image updateImage);
+    List<Image> findPublicImagesByUserName(String userName);
 
     void deleteAllImages();
+
 }

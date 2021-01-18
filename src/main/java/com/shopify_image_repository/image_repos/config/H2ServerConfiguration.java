@@ -30,7 +30,7 @@ public class H2ServerConfiguration {
     /**
      * TCP connection to connect with SQL clients to the embedded h2 database.
      * <p>
-     * Connect to "jdbc:h2:tcp://localhost:9092/mem:testdb", username "sa", password empty.
+     * Connect to "jdbc:h2:tcp://localhost:9092/mem:shopify", username "admin", password empty.
      *
      * @return The created TcpServer needed to access H2.
      * @throws SQLException If the server cannot be created.

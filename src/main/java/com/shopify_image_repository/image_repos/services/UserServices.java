@@ -13,14 +13,6 @@ public interface UserServices {
     List<User> findAll();
 
     /**
-     * A list of all users whose username contains the given substring
-     *
-     * @param username The substring (String) of the username of the Users you seek
-     * @return List of users whose username contains the given substring
-     */
-    List<User> findByNameContaining(String username);
-
-    /**
      * Returns the user with the given primary key.
      *
      * @param id The primary key (long) of the user you seek.
@@ -28,19 +20,8 @@ public interface UserServices {
      */
     User findUserById(long id);
 
-    /**
-     * Returns the user with the given name
-     *
-     * @param name The full name (String) of the User you seek.
-     * @return The User with the given name or throws an exception if not found.
-     */
-    User findByName(String name);
+    User findUserByName(String username);
 
-    /**
-     * Deletes the user record and its useremail items from the database based off of the provided primary key
-     *
-     * @param id id The primary key (long) of the user you seek.
-     */
     void delete(long id);
 
     /**

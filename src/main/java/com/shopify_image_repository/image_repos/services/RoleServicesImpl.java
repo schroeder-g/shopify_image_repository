@@ -63,15 +63,22 @@ public class RoleServicesImpl
     @Override
     public Role findByName(String name)
     {
-        Role rr = rolerepos.findByNameIgnoreCase(name);
+        Role rr = rolerepos.findByNameIgnoreCase(name.toLowerCase());
 
         if (rr != null)
         {
             return rr;
         } else
         {
-            throw new ResourceNotFoundException(name);
+            throw new ResourceNotFoundException(name.toLowerCase() + " " + rolerepos.findAll());
         }
+    }
+
+    @Transactional
+    @Override
+    public void deleteAll()
+    {
+        rolerepos.deleteAll();
     }
 
     @Transactional
@@ -85,13 +92,6 @@ public class RoleServicesImpl
         }
 
         return rolerepos.save(role);
-    }
-
-    @Transactional
-    @Override
-    public void deleteAll()
-    {
-        rolerepos.deleteAll();
     }
 
     @Transactional
@@ -112,8 +112,9 @@ public class RoleServicesImpl
 
         Role newRole = findRoleById(id); // see if id exists
 
-        rolerepos.updateRoleName(userAuditing.getCurrentAuditor()
-                                         .get(),
+        rolerepos.updateRoleName(userAuditing
+                                .getCurrentAuditor()
+                                .get(),
                                  id,
                                  role.getName());
         return findRoleById(id);
