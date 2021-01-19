@@ -1,7 +1,5 @@
 package com.shopify_image_repository.image_repos.controllers;
 
-import com.shopify_image_repository.image_repos.exceptions.ResourceNotFoundException;
-import com.shopify_image_repository.image_repos.models.Image;
 import com.shopify_image_repository.image_repos.models.User;
 import com.shopify_image_repository.image_repos.repositories.UserRepository;
 import com.shopify_image_repository.image_repos.services.HelperFunctions;
@@ -14,7 +12,6 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -36,11 +33,11 @@ public class UserController
 
     /**
      * Returns the User record for the currently authenticated user based off of the supplied access token
-     * <br>Example: <a href="http://localhost:2019/users/getuserinfo">http://localhost:2019/users/getuserinfo</a>
+     * <br>Example: <a href="http://localhost:2021/users/getuserinfo">http://localhost:2021/users/getuserinfo</a>
      *
      * @param authentication The authenticated user object provided by Spring Security
      * @return JSON of the current user. Status of OK
-     * @see HelperFunctions#getCurrentUser() (String) UserService.findByName(authenticated user)
+     * @see UserRepository#findByUsername(String)
      */
 //    @ApiOperation(value = "returns the currently authenticated user",
 //        response = User.class)
@@ -55,7 +52,7 @@ public class UserController
 
     /**
      * Returns a list of all users
-     * <br>Example: <a href="http://localhost:2019/users/users">http://localhost:2019/users/users</a>
+     * <br>Example: <a href="http://localhost:2021/users/users">http://localhost:2021/users/users</a>
      *
      * @return JSON list of all users with a status of OK
      * @see UserServices#findAll() UserService.findAll()
@@ -70,11 +67,9 @@ public class UserController
                 HttpStatus.OK);
     }
 
-
-
     /**
      * Returns a single user based off a user id number
-     * <br>Example: http://localhost:2019/users/user/7
+     * <br>Example: http://localhost:2021/users/user/7
      *
      * @param userId The primary key of the user you seek
      * @return JSON object of the user you seek

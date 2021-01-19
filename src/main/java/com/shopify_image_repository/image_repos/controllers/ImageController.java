@@ -22,6 +22,13 @@ public class ImageController
     @Autowired
     HelperFunctions helpFuncs;
 
+    /**
+     * Returns All image objects in the database.
+     * <br>Example: <a href="http://localhost:2021/images/find/8"></a>
+     *
+     * @return JSON image object with a status of OK
+     * @see ImageServices#findAll()
+     */
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping(value = "/all_pics", produces = "application/json")
     public ResponseEntity<?> getAllListings()
@@ -30,6 +37,14 @@ public class ImageController
         return new ResponseEntity<>(allImages, HttpStatus.OK);
     }
 
+    /**
+     * Returns the image object associated with a specific ID.
+     * <br>Example: <a href="http://localhost:2021/images/find/8"></a>
+     *
+     * @param  imageid
+     * @return JSON image object with a status of OK
+     * @see ImageServices#findById(long) (String)
+     */
    @GetMapping(value = "/find/{imageid}", produces = "application/json")
    public ResponseEntity<?> getImageById(@PathVariable long imageid)
    {
@@ -43,9 +58,10 @@ public class ImageController
 
     /**
      * Returns a list of all of a user's public images.
-     * <br>Example: <a href="http://localhost:2019/users/users">http://localhost:2019/users/users</a>
+     * <br>Example: <a href="http://localhost:2021/images/alexgoncalves/get-public-pics"></a>
      *
-     * @return JSON list of all public imags a user owns with a status of OK
+     * @param  username
+     * @return JSON list of all public images a user owns with a status of OK
      * @see ImageServices#findPublicImagesByUserName(String) () UserService.findAll()
      */
     @GetMapping(value = "/{username}/get-public-pics", produces = "application/json")
@@ -60,10 +76,11 @@ public class ImageController
 
     /**
      * Edits Image Objects to
-     * <br>Example: <a href="http://localhost:2019/users/users">http://localhost:2019/users/users</a>
+     * <br>Example: <a href="http://localhost:2021/images/8/updateprivacy">http://localhost:2021/images/8/updateprivacy/a>
      *
-     * @return JSON list of all public imags a user owns with a status of OK
-     * @see ImageServices#findPublicImagesByUserName(String) () UserService.findAll()
+     * @param  imageid
+     * @return A status of OK
+     * @see ImageServices#update(long, Image)
      */
     @PatchMapping(value = "/{imageid}/updateprivacy", consumes = {"application/json"})
     public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image updateBody)
