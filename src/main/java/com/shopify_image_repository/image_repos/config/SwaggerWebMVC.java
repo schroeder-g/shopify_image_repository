@@ -3,11 +3,13 @@ package com.shopify_image_repository.image_repos.config;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 /**
  * The application turns off any automatic web page generate done by Spring. This is done to improve exception handling.
  * However, we do need some web page generate done for Swagger, so we do that here.
  */
+@EnableSwagger2
 @Configuration
 public class SwaggerWebMVC
         implements WebMvcConfigurer

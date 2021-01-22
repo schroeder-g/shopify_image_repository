@@ -6,11 +6,15 @@ import com.shopify_image_repository.image_repos.models.User;
 import com.shopify_image_repository.image_repos.services.HelperFunctions;
 import com.shopify_image_repository.image_repos.services.ImageServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -23,6 +27,35 @@ public class ImageController
     @Autowired
     HelperFunctions helpFuncs;
 
+    /**
+     * Returns All image objects in the database.
+     * <br>Example: <a href="http://localhost:2021/images/find/8"></a>
+     *
+     * @return JSON image object with a status of OK
+     * @see ImageServices#findAll()
+     */
+
+    @PostMapping(value = "/new-pic", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> postNewPicture(@Valid @RequestBody Image newImg)
+    {
+        newImg.setImageId(0);
+        newImg.setOwner(helpFuncs.getCurrentUser());
+        newImg = imgServ.save(newImg);
+
+        // set the location header for the newly created resource
+        HttpHeaders responseHeaders = new HttpHeaders();
+        URI newListingURI = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{listingid}")
+                .buildAndExpand(newImg.getImageId())
+                .toUri();
+        responseHeaders.setLocation(newListingURI);
+
+        return new ResponseEntity<>(null,
+                responseHeaders,
+                HttpStatus.ACCEPTED);
+
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping(value = "/all_pics", produces = "application/json")
     public ResponseEntity<?> getAllListings()
@@ -31,6 +64,14 @@ public class ImageController
         return new ResponseEntity<>(allImages, HttpStatus.OK);
     }
 
+    /**
+     * Returns the image object associated with a specific ID.
+     * <br>Example: <a href="http://localhost:2021/images/find/8"></a>
+     *
+     * @param  imageid
+     * @return JSON image object with a status of OK
+     * @see ImageServices#findById(long) (String)
+     */
    @GetMapping(value = "/find/{imageid}", produces = "application/json")
    public ResponseEntity<?> getImageById(@PathVariable long imageid)
    {
@@ -43,10 +84,11 @@ public class ImageController
    }
 
     /**
-     * Returns a list of all of a users images that are public
-     * <br>Example: <a href="http://localhost:2019/users/users">http://localhost:2019/users/users</a>
+     * Returns a list of all of a user's public images.
+     * <br>Example: <a href="http://localhost:2021/images/alexgoncalves/get-public-pics"></a>
      *
-     * @return JSON list of all public imags a user owns with a status of OK
+     * @param  username
+     * @return JSON list of all public images a user owns with a status of OK
      * @see ImageServices#findPublicImagesByUserName(String) () UserService.findAll()
      */
     @GetMapping(value = "/{username}/get-public-pics", produces = "application/json")
@@ -59,22 +101,29 @@ public class ImageController
         return  new ResponseEntity<>(publicImgs, HttpStatus.OK);
     }
 
-    @PreAuthorize("hasAnyRole('ADMIN')")
-    @PatchMapping(value = "/images/{imageid}/updateprivacy", consumes = "application/json")
-    public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image image)
+    /**
+     * Edits Image Objects to
+     * <br>Example: <a href="http://localhost:2021/images/8/updateprivacy">http://localhost:2021/images/8/updateprivacy/a>
+     *
+     * @param  imageid
+     * @return A status of OK
+     * @see ImageServices#update(long, Image)
+     */
+    @PatchMapping(value = "/{imageid}/updateprivacy", consumes = {"application/json"})
+    public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image updateBody)
      {
-         Image update_hidden = imgServ.findById(imageid);
-         long currentUserID = helpFuncs.getCurrentUser().getUserid();
-         if ( currentUserID != image.getOwner().getUserid()){
-             return new ResponseEntity<>("You don't have permission to update this image.", HttpStatus.FORBIDDEN);
+         User currUser = helpFuncs.getCurrentUser();
+         if (
+                 imgServ.findById(imageid).getOwner().getUserid() ==
+                 currUser.getUserid() ||
+                 currUser.getRoles().contains("ADMIN")
+         )
+         {
+            imgServ.update(imageid, updateBody);
+            return new ResponseEntity<>(HttpStatus.OK);
+         } else {
+             return new ResponseEntity<>(HttpStatus.LOCKED);
          }
-
-         update_hidden.setIsPrivate(!image.getIsPrivate());
-
-         return  new ResponseEntity<>(update_hidden, HttpStatus.OK);
      }
-
-
-
 }
 

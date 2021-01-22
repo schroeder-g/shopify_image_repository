@@ -58,7 +58,7 @@ public class OpenController
 
     /**
      * This endpoint always anyone to create an account with the default role of USER. That role is hardcoded in this method.
-     *
+     * Moreover, this role handles logging in for pre-existing users.
      * @param httpServletRequest the request that comes in for creating the new user
      * @param minUser         A special minimum set of data that is needed to create a new user
      * @return The token access and other relevent data to token access. Status of CREATED. The location header to look up the new user.

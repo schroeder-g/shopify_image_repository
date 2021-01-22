@@ -3,15 +3,11 @@ package com.shopify_image_repository.image_repos.controllers;
 import com.shopify_image_repository.image_repos.models.Role;
 import com.shopify_image_repository.image_repos.services.RoleServices;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import javax.validation.Valid;
-import java.net.URI;
 import java.util.List;
 
 /**
@@ -34,7 +30,7 @@ public class RolesController
 
     /**
      * List of all roles
-     * <br>Example: <a href="http://localhost:2019/roles/roles">http://localhost:2019/roles/roles</a>
+     * <br>Example: <a href="http://localhost:2021/roles/roles">http://localhost:2021/roles/roles</a>
      *
      * @return JSON List of all the roles and their associated users
      * @see RoleServices#findAll() RoleService.findAll()
@@ -51,7 +47,7 @@ public class RolesController
 
     /**
      * The Role referenced by the given primary key
-     * <br>Example: <a href="http://localhost:2019/roles/role/3">http://localhost:2019/roles/role/3</a>
+     * <br>Example: <a href="http://localhost:2021/roles/role/3">http://localhost:2021/roles/role/3</a>
      *
      * @param roleId The primary key (long) of the role you seek
      * @return JSON object of the role you seek
@@ -71,7 +67,7 @@ public class RolesController
 
     /**
      * The Role with the given name
-     * <br>Example: <a href="http://localhost:2019/roles/role/name/data">http://localhost:2019/roles/role/name/data</a>
+     * <br>Example: <a href="http://localhost:2021/roles/role/name/data">http://localhost:2021/roles/role/name/data</a>
      *
      * @param roleName The name of the role you seek
      * @return JSON object of the role you seek
