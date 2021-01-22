@@ -2,14 +2,19 @@ package com.shopify_image_repository.image_repos.controllers;
 
 import com.shopify_image_repository.image_repos.exceptions.ResourceNotFoundException;
 import com.shopify_image_repository.image_repos.models.Image;
+import com.shopify_image_repository.image_repos.models.User;
 import com.shopify_image_repository.image_repos.services.HelperFunctions;
 import com.shopify_image_repository.image_repos.services.ImageServices;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import javax.validation.Valid;
+import java.net.URI;
 import java.util.List;
 
 @RestController
@@ -29,6 +34,28 @@ public class ImageController
      * @return JSON image object with a status of OK
      * @see ImageServices#findAll()
      */
+
+    @PostMapping(value = "/new-pic", consumes = "application/json", produces = "application/json")
+    public ResponseEntity<?> postNewPicture(@Valid @RequestBody Image newImg)
+    {
+        newImg.setImageId(0);
+        newImg.setOwner(helpFuncs.getCurrentUser());
+        newImg = imgServ.save(newImg);
+
+        // set the location header for the newly created resource
+        HttpHeaders responseHeaders = new HttpHeaders();
+        URI newListingURI = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{listingid}")
+                .buildAndExpand(newImg.getImageId())
+                .toUri();
+        responseHeaders.setLocation(newListingURI);
+
+        return new ResponseEntity<>(null,
+                responseHeaders,
+                HttpStatus.ACCEPTED);
+
+    }
+
     @PreAuthorize("hasAnyRole('ADMIN')")
     @GetMapping(value = "/all_pics", produces = "application/json")
     public ResponseEntity<?> getAllListings()
@@ -85,12 +112,18 @@ public class ImageController
     @PatchMapping(value = "/{imageid}/updateprivacy", consumes = {"application/json"})
     public ResponseEntity<?>  setPicturePrivacy(@PathVariable long imageid, @RequestBody Image updateBody)
      {
-         imgServ.update(imageid, updateBody);
-
-         return new ResponseEntity<>(HttpStatus.OK);
+         User currUser = helpFuncs.getCurrentUser();
+         if (
+                 imgServ.findById(imageid).getOwner().getUserid() ==
+                 currUser.getUserid() ||
+                 currUser.getRoles().contains("ADMIN")
+         )
+         {
+            imgServ.update(imageid, updateBody);
+            return new ResponseEntity<>(HttpStatus.OK);
+         } else {
+             return new ResponseEntity<>(HttpStatus.LOCKED);
+         }
      }
-
-
-
 }
 
